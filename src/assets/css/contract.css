@@ -1,0 +1,929 @@
+.contract {
+    width: 100%;
+    height: 100%;
+    padding: 4% 0% 1% 0%;
+    /* background: #263142; */
+}
+
+.sidebar {
+    width: 22%;
+    float: left;
+    background: #18202A;
+    padding-bottom: 10px;
+}
+
+.sc {
+    padding: 16px 8%;
+    height: 50px;
+}
+
+.sc_thead span {
+    display: inline-block;
+    height: 27px;
+    line-height: 27px;
+    margin-right: 16%;
+    position: relative;
+    cursor: pointer;
+}
+
+.sc_thead i {
+    position: absolute;
+}
+
+.ivu-icon-arrow-up-b {
+    top: 5px;
+}
+
+.sc_thead {
+    font-size: 9px;
+    padding: 0 7%;
+}
+
+.sidebar .ivu-table-body tr:hover {
+    background: #262A42;
+    cursor: pointer;
+}
+
+.sc_filter {
+    /* padding: 0 7%; */
+    font-size: 0;
+    background-color: #15251f;
+}
+
+.day .sc_filter {
+    background-color: #fff;
+    margin-right: -2px;
+}
+
+.sc_filter span {
+    padding: 0 20px;
+    font-size: 14px;
+    display: inline-block;
+    color: #fff;
+    cursor: pointer;
+    line-height: 40px;
+    background-color: #192330;
+}
+.contract .order_handle{
+    background:#15251f;
+}
+.day .sc_filter span {
+    color: #333;
+    background-color: #fafafa;
+    box-shadow: 0 0 2px #ccc;
+}
+
+.sc_filter>span:first-child {
+    border-top-left-radius: 6px;
+}
+
+.sc_filter>span:last-child {
+    border-top-right-radius: 6px;
+}
+
+.sc_filter span.active,
+.sc_filter i.active {
+    background-color: #141e2c;
+    color: #f0a70a;
+}
+
+.day .sc_filter span.active,
+.day .sc_filter i.active {
+    background-color: #fff;
+    /* border-right: 1px solid #ccc; */
+    color: #f0a70a;
+}
+
+.coin-menu .ivu-table td.coin-menu-symbol {
+    text-align: left;
+    padding-left: 25px;
+}
+
+.coin-menu .coin-menu-symbol .ivu-icon {
+    color: #f0a70a;
+    margin-right: 5px;
+}
+
+.ivu-icon {
+    cursor: pointer;
+}
+
+.sc_filter span {
+    /* margin-right: 16%; */
+}
+
+.sc_table th {
+    cursor: pointer;
+}
+
+.sc_table .ivu-table-body tr:hover {
+    background: #262A42;
+    cursor: pointer;
+}
+
+span.price {
+    margin: 0;
+}
+
+.buy {
+    color: #00b275 !important;
+}
+
+.sell {
+    color: #f15057 !important;
+}
+
+.kline {
+    float: right;
+    width: 77%;
+    overflow: hidden;
+    margin-bottom: 100px;
+}
+
+#chart_parameter_settings {
+    right: 0 !important;
+}
+
+#kline_container1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden;
+    height: 680px;
+    border-radius: 6px;
+}
+
+#kline_container1.hidden,
+#depth_chart.hidden {
+    z-index: -100;
+}
+
+#depth_chart {
+    position: absolute!important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 680px;
+    border-radius: 6px;
+}
+
+.trade_container dark hide {
+    display: none;
+}
+
+.contract .contarct-trade_panel {
+    width: 100%;
+    background: #15251f;
+    border-radius: 6px;
+}
+
+.day .contarct-trade_panel {
+    background-color: #fff;
+}
+
+.sc,
+.mod_hd,
+.trade_hd,
+.order_book_hd,
+.open_orders_hd,
+.deal_record_hd {
+    padding: 0 30px;
+    height: 50px;
+    line-height: 48px;
+    background: #1B1E2E;
+    font-size: 16px;
+}
+
+.trade_hd ul li {
+    float: left;
+    margin-right: 40px;
+    cursor: pointer;
+}
+ul li {
+    list-style-type: none;
+}
+.trade_hd .feesRate {
+    float: right;
+}
+
+.contract-trade_bd {
+    padding: 10px 10px 20px 10px;
+    overflow: hidden;
+}
+
+.contract-trade_bd .contract-panel {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    border: 0 solid transparent;
+    padding-top: 10px;
+}
+
+.mod_tab li.active {
+    border-bottom: 1px solid #7A98F7;
+    color: #7A98F7;
+}
+
+.contarct-trade_panel .contract-panel .hd {
+    /* line-height: 50px; */
+    height: 34px;
+    /* margin-right: 10px; */
+    border-bottom: 1px solid #1F2943;
+}
+
+.contarct-trade_panel .contract-panel .hd span {
+    padding-left: 0;
+    font-size: 12px;
+}
+
+.contarct-trade_panel .contract-panel .hd b {
+    padding-left: 0;
+    font-size: 14px;
+    color: #7A98F7;
+}
+
+.contarct-trade_panel .contract-panel .hd.hd_login a {
+    float: right;
+    text-decoration: none;
+}
+
+.contarct-trade_panel .contract-panel.panel_buy {
+    /* padding-right: 15px; */
+}
+
+.contarct-trade_panel .contract-panel.panel_sell {
+    padding-left: 15px;
+}
+
+.contarct-trade_wrap .ivu-input {
+    background: #15251f;
+    border: 1px solid rgba(69, 83, 112, .5);
+    color: #fff;
+    height: 40px;
+    text-indent: 20px;
+}
+
+.contarct-trade_wrap .ivu-input-wrapper {
+    outline: none;
+}
+
+.contarct-trade_wrap .ivu-input:focus,
+.contarct-trade_wrap .ivu-input:hover {
+    box-shadow: none;
+    border-color: rgba(69, 83, 112, .8);
+    outline: none;
+}
+
+.order .ivu-table-wrapper .ivu-table .ivu-table-header th {
+    background-color: #192330;
+    border-bottom: 1px solid #27313e;
+    line-height: 30px;
+}
+
+.day .contarct-trade_wrap .ivu-input {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.contarct-trade_wrap .ivu-form-item-content label {
+    position: absolute;
+    top: 4px;
+    right: 10px;
+    color: #7c7f82;
+}
+
+p.math_price {
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+    margin-top: -1px;
+    font-size: 12px;
+    text-align: right;
+    color: #7c7f82;
+}
+
+.total {
+    margin-bottom: 10px;
+    height: 20px;
+    color: #7c7f82;
+}
+
+.contract-trade_bd Button {
+    width: 44%;
+    border: 0;
+    color: #fff;
+}
+
+.contract-trade_bd Button.bg-red {
+    background-color: #f15057;
+}
+
+.contract-trade_bd Button.bg-green {
+    background-color: #192330;
+}
+
+.contract-trade_bd Button:hover {
+    /* background: #54679F; */
+}
+
+.order_book {
+    float: right;
+    width: 34%;
+    height: 430px;
+    background: #192330;
+    margin-bottom: 15px;
+}
+
+.order_book_hd {
+    height: 50px;
+}
+
+.order_book_hd b {
+    color: #BCD7E6;
+}
+
+.contract .ivu-table th,
+.contract .ivu-table td {
+    background: none;
+    border: 0;
+}
+
+.ivu-modal {
+    width: 450px !important;
+}
+
+.ivu-modal-header .ivu-modal-header-inner {
+    color: #f0a70a;
+    text-align: center;
+}
+
+.ivu-modal .ivu-modal-body .ivu-btn {
+    padding: 5px 35px;
+}
+
+.contract .ivu-table-expanded-cell {
+    background: #192330 !important;
+}
+
+.contract.day .ivu-table-expanded-cell {
+    background: #192330 !important;
+}
+
+.contract .order .ivu-table-cell-expand {
+    color: #f0a70a;
+}
+
+.contract .ivu-table th {
+    cursor: pointer;
+}
+
+.contract .ivu-table th span {
+    color: #61688A;
+}
+
+
+
+/* .order_book .ivu-table th:first-child span{
+    color:#18202A;
+} */
+
+.ivu-table-row-highlight td,
+.ivu-table-stripe .ivu-table-body tr.ivu-table-row-highlight:nth-child(2n) td,
+.ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td,
+tr.ivu-table-row-highlight.ivu-table-row-hover td {
+    background: #192330;
+}
+.contract .ivu-table-overflowY::-webkit-scrollbar {
+    width: 5px; /*对垂直流动条有效*/
+}
+/*定义滚动条的轨道颜色、内阴影及圆角*/
+.contract .ivu-table-overflowY::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px #27313e;
+    background-color: #192330;
+    border-radius: 3px;
+}
+/*定义滑块颜色、内阴影及圆角*/
+.contract .ivu-table-overflowY::-webkit-scrollbar-thumb{
+    border-radius: 7px;
+    -webkit-box-shadow: inset 0 0 6px #27313e;
+    background-color: #27313e;
+}
+
+.contract.day .ivu-table-overflowY::-webkit-scrollbar {
+    width: 5px; /*对垂直流动条有效*/
+}
+/*定义滚动条的轨道颜色、内阴影及圆角*/
+.contract.day .ivu-table-overflowY::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(238, 238, 238, .9);
+    background-color: rgba(238, 238, 238, .9);
+    border-radius: 3px;
+}
+/*定义滑块颜色、内阴影及圆角*/
+.contract.day .ivu-table-overflowY::-webkit-scrollbar-thumb{
+    border-radius: 7px;
+    -webkit-box-shadow: inset 0 0 6px rgba(238, 238, 238, .9);
+    background-color: rgba(238, 238, 238, .9);
+}
+
+.order_book .ivu-table .ivu-table-body tr:hover {
+    background: #27313e;
+    cursor: pointer;
+}
+
+.main .trade-wrap .ivu-table {
+    border-radius: 6px;
+}
+
+.contract .ivu-table th,
+.contract .ivu-table td {
+    height: 30px;
+    text-align: center;
+}
+
+.contract .sidebar .ivu-table th,
+.contract .sidebar .ivu-table td {
+    height: 35px;
+}
+
+.contract .ivu-table td span {
+    color: #BCD7E6;
+}
+
+.contract.day .ivu-table td span {
+    color: #333;
+}
+
+.contract .ivu-table td .ivu-btn-warning {
+    background: #192330 !important;
+    border: 1px solid #fff;
+}
+
+.contract .ivu-table td .ivu-btn-warning span {
+    color: #fff;
+}
+
+.contract .ivu-table-cell {
+    padding: 0;
+}
+
+.ivu-table-sort {
+    height: 14px;
+}
+
+.buy_table {
+    /* border-top: 2px solid #1F2943 !important; */
+}
+
+.buy_table.hidden .ivu-table-header {
+    display: none;
+}
+
+.open_orders {
+    float: left;
+    width: 64%;
+    min-height: 400px;
+    background: #18202A;
+    margin-bottom: 15px;
+}
+
+.open_orders .ivu-select-item {
+    color: #fff;
+}
+
+.open_orders .ivu-table .ivu-table-body tr:hover {
+    background: #262A42;
+}
+
+.depth_graph {
+    float: left;
+    width: 64%;
+    min-height: 550px;
+    background: #18202A;
+}
+
+.depth_graph_hd {
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    padding-left: 30px;
+}
+
+.depth_graph_ct {
+    padding-left: 30px;
+    height: 500px;
+}
+
+.mod_hd {
+    height: 48px;
+    line-height: 48px;
+    font-size: 14px;
+    padding-left: 15px;
+}
+
+.mod_hd dl dt {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.mod_hd dl dd {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.kline .ivu-table button span {
+    color: #fff;
+}
+
+.deal_record {
+    float: right;
+    width: 34%;
+    height: 550px;
+    background: #18202A;
+}
+
+.deal_record .ivu-table-body {
+    overflow: hidden;
+}
+
+.history {
+    float: left;
+}
+
+.history li {
+    float: left;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.history li.active {
+    color: #7A98F7
+}
+
+.open_orders_hd .ivu-select {
+    float: right;
+    width: 100px;
+}
+
+.open_orders_hd .ivu-select-selection {
+    margin-top: 12px;
+    background: #1B1E2E;
+}
+
+.contarct-trade_wrap .ivu-btn {
+    font-size: 12px;
+    padding: 8px 15px;
+    color: #fff;
+}
+
+.contarct-trade_wrap .ivu-btn:hover {
+    color: #fff;
+}
+
+.contract iframe {
+    height: 680px !important;
+}
+
+#standCon iframe {
+    height: 740px !important;
+  }
+
+#tradingview_188a1 {
+    height: 680px;
+}
+
+.contract .ivu-page-next,
+.contract .ivu-page-prev {
+    background: #1B1E2E;
+}
+
+.contract .ivu-page-item-active {
+    background: #54677F;
+    border-color: #54677F;
+}
+
+.contract .ivu-page-item:hover {
+    border-color: #54677F;
+}
+
+.contract .ivu-table-wrapper {
+    box-shadow: none;
+    border: 0;
+}
+
+.contract .ivu-table-wrapper tbody.ivu-table-tbody .ivu-table-row td {
+    background-color: transparent;
+}
+
+
+/* .day .contract .coin-menu .ivu-table-wrapper{
+    box-shadow: 0 0 2px #ccc;
+} */
+
+.contract .ivu-table {
+    background: none;
+    color: #fff;
+}
+
+.contract .ivu-table:before,
+.contract .ivu-table:after {
+    display: none;
+}
+
+.contract .ivu-input[disabled],
+.contract fieldset[disabled] .ivu-input {
+    border-color: transparent !important;
+    cursor: unset !important;
+    background: #192330;
+}
+
+.contract.day .ivu-input[disabled] {
+    border-color: #ccc !important;
+    background-color: #fff;
+}
+
+.contract .ivu-input[disabled]:hover {
+    border-color: transparent !important;
+}
+
+.contract.day .ivu-input[disabled]:hover {
+    border-color: #ccc !important;
+}
+
+.contract .ivu-select-dropdown {
+    background: #192330;
+}
+
+.contract .main .ivu-table .ivu-table-header th {
+    line-height: 40px;
+    /* background-color: #003f3c; */
+}
+
+.contract.day .ivu-table .ivu-table-header th {
+    /* background-color: #fff; */
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.contract .ivu-table {
+    /* background-color: #19; */
+}
+
+.contract.day .ivu-table {
+    /* background-color: #fff; */
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-row td {
+    /* border-bottom: 1px solid #27313e; */
+    border-color: #192330;
+}
+
+.contract.day .ivu-table-wrapper .ivu-table .ivu-table-row td {
+    border-bottom: 1px solid #f0f0f0;
+    /* border-color: #f0f0f0; */
+}
+
+.contract .buy_table .ivu-table .ivu-table-row:nth-last-child(1) td {
+    border-bottom: none;
+}
+
+.contract .sell_table .ivu-table .ivu-table-row:nth-last-child(1) td {
+    border-bottom: none;
+}
+
+.contract .order .ivu-table-tip td {
+    height: 144px;
+}
+
+.contract .coin-menu td {
+    cursor: pointer;
+}
+
+.contract .order .linkmore {
+    float: right;
+    color: #f0a70a;
+    font-size: 12px;
+    line-height: 30px;
+    /* margin-left: 200px; */
+}
+
+
+/* 滑块样式 */
+
+.contract .ivu-slider-wrap {
+    height: 6px;
+    margin: 0;
+}
+
+.contract .slider-wrap {
+    position: relative;
+    margin: 36px 0 20px 2px;
+}
+
+.contract .slider-wrap .slider-stop {
+    position: absolute;
+    top: -5px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+}
+
+.contract .slider-wrap .slider-block {
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 6px;
+    height: 6px;
+    background-color: #ccc;
+    border-radius: 6px;
+}
+
+.contract .ivu-slider-bar {
+    z-index: 100;
+}
+
+.contract .ivu-slider-button-wrap {
+    z-index: 101;
+}
+
+.contract .silder-buy .ivu-slider-bar {
+    height: 6px;
+    background: #172636;
+}
+.contract .silder-buy .ivu-slider-button {
+    border-color: #172636;
+}
+.contract .silder-buy {
+    border-color: #172636;
+}
+
+.contract .silder-sell .ivu-slider-bar {
+    height: 6px;
+    background: #f15057;
+}
+
+.contract .silder-sell .ivu-slider-button {
+    border-color: #f15057;
+}
+
+.contract .ivu-slider-stop {
+    width: 6px;
+    height: 6px;
+}
+
+.contract .slider-wrap .ivu-tooltip-popper {
+    padding: 0;
+}
+
+.contract .slider-wrap .ivu-tooltip-arrow {
+    display: none;
+}
+
+.contract.day .ivu-tooltip-inner {
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 0 2px #ccc;
+}
+
+.contract .slider-wrap .ivu-tooltip-inner {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    min-height: 0;
+    margin-bottom: 3px;
+    background-color: transparent;
+}
+
+.contract .bd_marketaa .ivu-btn {
+    margin-top: 20px;
+}
+
+.contract .bd_limitedaa .ivu-form-item, .contract .bd_marketaa .ivu-form-item {
+    margin-bottom: 10px;
+}
+
+.contract.day .ivu-tooltip-popper .ivu-tooltip-arrow {
+    border-top-color: rgba(217, 217, 217, .5);
+}
+
+.contract.day .ivu-tooltip-popper .ivu-tooltip-arrow:after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: 1px;
+    content: "";
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent;
+    margin-left: -5px;
+    border-top-width: 5px;
+    border-bottom-width: 0;
+    border-top-color: #fff;
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-row {
+    position: relative;
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-row td.percenttd {
+    position: relative;
+    /* right: 0;
+    left: 0; */
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-header {
+    background-color: #192330;
+    border-bottom: 1px solid rgb(39, 49, 62);
+}
+
+.contract.day .ivu-table-header {
+    background-color: #fff !important;
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-header th.percenttd {
+    display: none;
+    font-size: 0;
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-row td.percenttd .ivu-table-cell {
+    position: absolute;
+    width: 220px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.contract .ivu-table-wrapper .ivu-table .ivu-table-row td.percenttd .percentdiv {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    opacity: .2;
+}
+
+.contract.day .ivu-table-wrapper .ivu-table .ivu-table-row td.percenttd .percentdiv {
+    opacity: .1;
+}
+.contract .ivu-table-wrapper > .ivu-spin-fix {
+    /* border-color: rgba(255, 255, 255, .05); */
+}
+.contract .ivu-spin-fix {
+    /* background: rgba(255, 255, 255, .05); */
+}
+.contract .gray-font {
+    color: #7c7f82;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+.contract-btns {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.dis-enter {
+    border: 1px solid rgba(69, 83, 112, .5) !important;
+    border-radius: 4px;
+}
+.asset-warp {
+    margin-top: 14px;
+    background: #192330;
+    border-radius: 6px;
+}
+.asset-warp .title {
+    font-size: 16px;
+    line-height: 1;
+    padding:10px;
+    color: #BCD7E6;
+    border-bottom: 1px solid #27313e;
+
+}
+.asset-warp ul {
+    padding-bottom: 6px;
+}
+.asset-warp li {
+    display: flex;
+    color: #BCD7E6;
+    font-size: 12px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    line-height: 28px;
+    justify-content: space-between;
+    border-bottom: 1px solid #27313e;
+}
+.asset-warp li .dash-line {
+    border-bottom: 1px dashed #27313e;
+    cursor: pointer;
+}
+.coin-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    border-radius: 50%;
+}
