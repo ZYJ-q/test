@@ -311,461 +311,461 @@
 </template>
 <script>
 export default {
-    data() {
-        return {
-            googleSwitch: false,
-            user: {},
-            EOSLabel:'',
-            codeIsSending: false,
-            showUSDT:false,
-            curUsdtIndex:0,
-            showEOS:false,
-            usdtType:[
-                {
-                    value:'ERC20',
-                    name:'USDT_ERC20'
-                },{
-                    value:'OMNI',
-                    name:'USDT_OMNI'
-                }
-            ],
-            sendcodeValue: this.$t("uc.regist.sendcode"),
-            countdown: 60,
-            formInline: {
-                code: "",
-                fundpwd: "",
-                googleCode: ""
-            },
-            modal: false,
-            fundpwd: "",
-            currentCoin: {},
-            transaction: {
-                page: 0,
-                pageSize: 10,
-                total: 0
-            },
-            loading: true,
-            withdrawAdress: "",
-            inputAddress: "", //用户输入的地址
-            withdrawAmount: 0, // 默认提币数量
-            withdrawFee: 0, // 默认提币手续费
-            withdrawOutAmount: 0, // 默认到账数量
-            coinType: "",
-            coinList: [],
-            tableWithdraw: [],
-            allTableWithdraw: []
-        };
-    },
-    watch: {
-        currentCoin: function () {
-            this.withdrawFee = this.currentCoin.minTxFee;
+  data () {
+    return {
+      googleSwitch: false,
+      user: {},
+      EOSLabel: '',
+      codeIsSending: false,
+      showUSDT: false,
+      curUsdtIndex: 0,
+      showEOS: false,
+      usdtType: [
+        {
+          value: 'ERC20',
+          name: 'USDT_ERC20'
+        }, {
+          value: 'OMNI',
+          name: 'USDT_OMNI'
         }
-        // withdrawAmount:function () {
-        //     this.withdrawOutAmount=this.withdrawAmount-this.withdrawFee>0?0:this.round(
-        //         this.accSub(this.withdrawAmount, this.withdrawFee),
-        //         this.currentCoin.withdrawScale
-        //     );
-        // }
+      ],
+      sendcodeValue: this.$t("uc.regist.sendcode"),
+      countdown: 60,
+      formInline: {
+        code: "",
+        fundpwd: "",
+        googleCode: ""
+      },
+      modal: false,
+      fundpwd: "",
+      currentCoin: {},
+      transaction: {
+        page: 0,
+        pageSize: 10,
+        total: 0
+      },
+      loading: true,
+      withdrawAdress: "",
+      inputAddress: "", //用户输入的地址
+      withdrawAmount: 0, // 默认提币数量
+      withdrawFee: 0, // 默认提币手续费
+      withdrawOutAmount: 0, // 默认到账数量
+      coinType: "",
+      coinList: [],
+      tableWithdraw: [],
+      allTableWithdraw: []
+    }
+  },
+  watch: {
+    currentCoin: function () {
+      this.withdrawFee = this.currentCoin.minTxFee
+    }
+    // withdrawAmount:function () {
+    //     this.withdrawOutAmount=this.withdrawAmount-this.withdrawFee>0?0:this.round(
+    //         this.accSub(this.withdrawAmount, this.withdrawFee),
+    //         this.currentCoin.withdrawScale
+    //     );
+    // }
+  },
+  methods: {
+    cancel () {
+      this.modal = false
+      this.formInline.code = ""
+      this.formInline.fundpwd = ""
+      this.formInline.googleCode = ""
     },
-    methods: {
-        cancel() {
-            this.modal = false;
-            this.formInline.code = "";
-            this.formInline.fundpwd = "";
-            this.formInline.googleCode = "";
-        },
-        sendCode() {
-            this.$http.post(this.host + "/uc/mobile/withdraw/code").then(response => {
-                var resp = response.body;
-                if (resp.code == 0) {
-                    this.settime();
-                    this.$Notice.success({
-                        title: this.$t("common.tip"),
-                        desc: resp.message
-                    });
-                } else {
-                    this.$Notice.error({
-                        title: this.$t("common.tip"),
-                        desc: resp.message
-                    });
-                }
-            });
-        },
-        settime() {
-            this.sendcodeValue = this.countdown;
-            this.codeIsSending = true;
-            let timercode = setInterval(() => {
-                this.countdown--;
-                this.sendcodeValue = this.countdown;
-                if (this.countdown <= 0) {
-                    clearInterval(timercode);
-                    this.sendcodeValue = this.$t("uc.regist.sendcode");
-                    this.countdown = 60;
-                    this.codeIsSending = false;
-                }
-            }, 1000);
-        },
-        changePage(index) {
-            this.transaction.page = index - 1;
-            this.getList();
-        },
-        onAddressChange(data) {
-            this.inputAddress = data;
-        },
-        clearValues() {
-            if (this.$refs.address) {
-                this.$refs.address.setQuery(" ");
-            }
-            this.withdrawAdress = "";
-            this.inputAddress = "";
-            this.withdrawAmount = 0;
-            // this.withdrawFee= 0;
-            this.withdrawOutAmount = 0;
-        },
-        getCurrentCoinRecharge() {
-            if (this.coinType != "") {
-                var temp = [];
-                for (var i = 0; i < this.allTableWithdraw.length; i++) {
-                    //   if (this.allTableWithdraw[i].symbol == this.coinType) {
-                    if (this.allTableWithdraw[i].coin.unit == this.coinType) {
-                        temp.push(this.allTableWithdraw[i]);
-                    }
-                }
-                this.tableWithdraw = temp;
-            } else {
-                this.tableWithdraw = this.allTableWithdraw;
-            }
-        },
-        selectUsdtType:function(i){
-            this.curUsdtIndex=i;
-        },
-        ok() {
-            if (this.formInline.code == "") {
-                this.modal = true;
-                this.$Message.error("请填写短信验证码");
-                return;
-            }
-            if (this.formInline.fundpwd == "") {
-                this.modal = true;
-                this.$Message.error(this.$t("otc.chat.msg7tip"));
-                return;
-            }
-            let params = {};
-            if (this.googleSwitch) {
-                if (this.formInline.googleCode == "") {
-                    this.modal = true;
-                    this.$Message.error("请填写谷歌验证码");
-                    return;
-                } else {
-                    params.googleCode = this.formInline.googleCode;
-                }
-            }
-
-
-            params["unit"] = this.currentCoin.unit;
-            if(this.currentCoin.unit=='EOS'){
-                params["address"] = this.withdrawAdress+'|'+this.EOSLabel;
-            }else{
-                params["address"] = this.withdrawAdress;
-            }
-
-            params["amount"] = this.withdrawAmount;
-            params["fee"] = this.withdrawFee;
-            params["jyPassword"] = this.formInline.fundpwd;
-            params["code"] = this.formInline.code;
-            params["googleCode"] = this.formInline.googleCode;
-            params["USDTType"] = this.currentCoin.unit=='USDT'?this.usdtType[this.curUsdtIndex].value:'';
-            this.$http.post(this.host + "/uc/withdraw/apply", params).then(response => {
-                this.fundpwd = "";
-                var resp = response.body;
-                if (resp.code == 0) {
-                    this.modal = false;
-                    this.formInline.code = "";
-                    this.formInline.fundpwd = "";
-                    this.transaction.page = 0;
-                    this.getList();
-                    this.clearValues();
-                    this.$Message.success(resp.message);
-                } else {
-                    this.$Message.error(resp.message);
-                }
-            });
-        },
-        getAddrList() {
-            //初始化页面上的值
-            this.clearValues();
-            if(this.coinType=='USDT'){
-                this.showUSDT=true;
-            }else{
-                this.showUSDT=false;
-            }
-            if(this.coinType=='EOS'){
-                this.showEOS=true;
-            }else{
-                this.showEOS=false;
-            }
-            //获取地址uc/withdraw/apply
-            this.$http.post(this.host + "/uc/withdraw/support/coin/info").then(response => {
-                var resp = response.body;
-                if (resp.code == 0 && resp.data.length > 0) {
-                    this.coinList = resp.data;
-                    if (this.coinType) {
-                        for (let i = 0; i < resp.data.length; i++) {
-                            if (this.coinType == resp.data[i].unit) {
-                                this.currentCoin = resp.data[i];
-                                break;
-                            }
-                        }
-                    } else {
-                        this.currentCoin = this.coinList[0];
-                        this.coinType = this.currentCoin.unit;
-                    }
-                } else {
-                    // this.$Message.error(resp.message);
-                }
-            });
-        },
-        getList() {
-            this.loading = true;
-            //获取tableWithdraw
-            let params = {};
-            params["page"] = this.transaction.page;
-            params["pageSize"] = this.transaction.pageSize;
-            this.$http
-                .post(this.host + "/uc/withdraw/record", params)
-                .then(response => {
-                    var resp = response.body;
-                    if (resp.code == 0) {
-                        this.tableWithdraw = resp.data.content;
-                        this.transaction.total = resp.data.totalElements;
-                        this.transaction.page = resp.data.number;
-                    } else {
-                        // this.$Message.error(resp.message);
-                    }
-                    this.loading = false;
-                });
-        },
-        accSub(arg1, arg2) {
-            var r1, r2, m, n;
-            try {
-                r1 = arg1.toString().split(".")[1].length;
-            } catch (e) {
-                r1 = 0;
-            }
-            try {
-                r2 = arg2.toString().split(".")[1].length;
-            } catch (e) {
-                r2 = 0;
-            }
-            m = Math.pow(10, Math.max(r1, r2));
-            //last modify by deeka
-            //动态控制精度长度
-            n = r1 >= r2 ? r1 : r2;
-            return ((arg1 * m - arg2 * m) / m).toFixed(n);
-        },
-        round(v, e) {
-            var t = 1;
-            for (; e > 0; t *= 10, e--);
-            for (; e < 0; t /= 10, e++);
-            return Math.round(v * t) / t;
-        },
-        computerAmount() {
-            /*let num = this.round(
-                this.accSub(this.withdrawAmount, this.withdrawFee),
-                this.currentCoin.withdrawScale
-            );
-            this.withdrawOutAmount = num >= 0 ? num : 0;*/
-            // 新增代码
-            // 判断 提币数量 < 最小手续费 = 最小提币数量
-            // if (this.withdrawAmount <= this.currentCoin.minAmount) {
-            //     this.withdrawAmount = this.currentCoin.maxAmount
-            // }
-            // 否则 提出当前数量减去手续费
-            this.withdrawOutAmount =this.withdrawAmount - this.withdrawFee<0?0:Number((this.withdrawAmount - this.withdrawFee).toFixed(5))
-            // 旧代码
-            // this.withdrawOutAmount = this.round(
-            //   this.accSub(this.withdrawAmount, this.withdrawFee),
-            //   this.currentCoin.withdrawScale
-            // );
-        },
-        computerAmount2() {
-            this.withdrawAmount =
-                (this.withdrawAmount + "").replace(/([0-9]+\.[0-9]{6})[0-9]*/, "$1") -
-                0;
-            this.withdrawOutAmount = this.round(
-                this.accSub(this.withdrawAmount, this.withdrawFee),
-                this.currentCoin.withdrawScale
-            );
-        },
-        valid() {
-            this.withdrawAdress = this.withdrawAdress || this.inputAddress;
-            if (this.coinType == "") {
-                this.$Message.error(this.$t("uc.finance.withdraw.symboltip"));
-                return false;
-            } else if (this.withdrawAdress == "") {
-                this.$Message.error(this.$t("uc.finance.withdraw.addresstip"));
-                return false;
-            }else if(this.showEOS==true&&this.EOSLabel==""){
-                this.$Message.error('请输入EOS地址标签')
-            } else if (
-                this.withdrawAmount == "" ||
-                this.withdrawAmount == 0 ||
-                this.withdrawAmount - 0 < this.currentCoin.minAmount
-            ) {
-                this.$Message.error(
-                    this.$t("uc.finance.withdraw.numtip2") + this.currentCoin.minAmount
-                );
-                return false;
-            } else if (this.withdrawAmount - 0 < this.withdrawFee) {
-                this.$Message.error(this.$t("uc.finance.withdraw.numtip3"));
-                return false;
-            } else if (
-                this.withdrawFee == "" ||
-                this.withdrawFee == 0 ||
-                this.withdrawFee - 0 > this.currentCoin.maxTxFee ||
-                this.withdrawFee - 0 < this.currentCoin.minTxFee
-            ) {
-                this.$Message.error(
-                    this.$t("uc.finance.withdraw.feetip1") + this.currentCoin.minTxFee + " , " + this.$t("uc.finance.withdraw.feetip2") + this.currentCoin.maxTxFee
-                );
-                return false;
-            } else {
-                return true;
-            }
-        },
-        apply() {
-            this.formInline.code = ""
-            this.formInline.fundpwd = ""
-            this.formInline.googleCode = ""
-            if (this.valid()) {
-                this.modal = true;
-                let timercode = setInterval(() => {
-                    if (this.countdown <= 0) {
-                        clearInterval(timercode);
-                        this.sendcodeValue = this.$t("uc.regist.sendcode");
-                        this.codeIsSending = false;
-                    }
-                }, 1000)
-            }
-        },
-        getMember() {
-            //获取个人安全信息
-            this.$http.post(this.host + "/uc/approve/security/setting").then(response => {
-                var resp = response.body;
-                if (resp.code == 0) {
-                    this.user = resp.data;
-                } else {
-                    this.$Message.error(this.loginmsg);
-                }
-            });
+    sendCode () {
+      this.$http.post(this.host + "/uc/mobile/withdraw/code").then(response => {
+        var resp = response.body
+        if (resp.code == 0) {
+          this.settime()
+          this.$Notice.success({
+            title: this.$t("common.tip"),
+            desc: resp.message
+          })
+        } else {
+          this.$Notice.error({
+            title: this.$t("common.tip"),
+            desc: resp.message
+          })
         }
+      })
     },
-    created() {
-        // this.getMember();
-        this.$http.options.emulateJSON = false;
-        this.coinType = this.$route.query.name || "";
-        this.getAddrList();
-        this.getList(0, 10, 1);
+    settime () {
+      this.sendcodeValue = this.countdown
+      this.codeIsSending = true
+      let timercode = setInterval(() => {
+        this.countdown--
+        this.sendcodeValue = this.countdown
+        if (this.countdown <= 0) {
+          clearInterval(timercode)
+          this.sendcodeValue = this.$t("uc.regist.sendcode")
+          this.countdown = 60
+          this.codeIsSending = false
+        }
+      }, 1000)
+    },
+    changePage (index) {
+      this.transaction.page = index - 1
+      this.getList()
+    },
+    onAddressChange (data) {
+      this.inputAddress = data
+    },
+    clearValues () {
+      if (this.$refs.address) {
+        this.$refs.address.setQuery(" ")
+      }
+      this.withdrawAdress = ""
+      this.inputAddress = ""
+      this.withdrawAmount = 0
+      // this.withdrawFee= 0;
+      this.withdrawOutAmount = 0
+    },
+    getCurrentCoinRecharge () {
+      if (this.coinType != "") {
+        var temp = []
+        for (var i = 0; i < this.allTableWithdraw.length; i++) {
+          //   if (this.allTableWithdraw[i].symbol == this.coinType) {
+          if (this.allTableWithdraw[i].coin.unit == this.coinType) {
+            temp.push(this.allTableWithdraw[i])
+          }
+        }
+        this.tableWithdraw = temp
+      } else {
+        this.tableWithdraw = this.allTableWithdraw
+      }
+    },
+    selectUsdtType: function (i) {
+      this.curUsdtIndex = i
+    },
+    ok () {
+      if (this.formInline.code == "") {
+        this.modal = true
+        this.$Message.error("请填写短信验证码")
+        return
+      }
+      if (this.formInline.fundpwd == "") {
+        this.modal = true
+        this.$Message.error(this.$t("otc.chat.msg7tip"))
+        return
+      }
+      let params = {}
+      if (this.googleSwitch) {
+        if (this.formInline.googleCode == "") {
+          this.modal = true
+          this.$Message.error("请填写谷歌验证码")
+          return
+        } else {
+          params.googleCode = this.formInline.googleCode
+        }
+      }
 
-        this.$http.post(this.host + '/uc/get/user', { mobile: this.$store.getters.member.mobile }).then(res => {
-            const data = res.body;
-            if (data.code == 0) {
-                this.googleSwitch = !!data.data;
+
+      params["unit"] = this.currentCoin.unit
+      if (this.currentCoin.unit == 'EOS') {
+        params["address"] = this.withdrawAdress + '|' + this.EOSLabel
+      } else {
+        params["address"] = this.withdrawAdress
+      }
+
+      params["amount"] = this.withdrawAmount
+      params["fee"] = this.withdrawFee
+      params["jyPassword"] = this.formInline.fundpwd
+      params["code"] = this.formInline.code
+      params["googleCode"] = this.formInline.googleCode
+      params["USDTType"] = this.currentCoin.unit == 'USDT' ? this.usdtType[this.curUsdtIndex].value : ''
+      this.$http.post(this.host + "/uc/withdraw/apply", params).then(response => {
+        this.fundpwd = ""
+        var resp = response.body
+        if (resp.code == 0) {
+          this.modal = false
+          this.formInline.code = ""
+          this.formInline.fundpwd = ""
+          this.transaction.page = 0
+          this.getList()
+          this.clearValues()
+          this.$Message.success(resp.message)
+        } else {
+          this.$Message.error(resp.message)
+        }
+      })
+    },
+    getAddrList () {
+      //初始化页面上的值
+      this.clearValues()
+      if (this.coinType == 'USDT') {
+        this.showUSDT = true
+      } else {
+        this.showUSDT = false
+      }
+      if (this.coinType == 'EOS') {
+        this.showEOS = true
+      } else {
+        this.showEOS = false
+      }
+      //获取地址uc/withdraw/apply
+      this.$http.post(this.host + "/uc/withdraw/support/coin/info").then(response => {
+        var resp = response.body
+        if (resp.code == 0 && resp.data.length > 0) {
+          this.coinList = resp.data
+          if (this.coinType) {
+            for (let i = 0; i < resp.data.length; i++) {
+              if (this.coinType == resp.data[i].unit) {
+                this.currentCoin = resp.data[i]
+                break
+              }
             }
+          } else {
+            this.currentCoin = this.coinList[0]
+            this.coinType = this.currentCoin.unit
+          }
+        } else {
+          // this.$Message.error(resp.message);
+        }
+      })
+    },
+    getList () {
+      this.loading = true
+      //获取tableWithdraw
+      let params = {}
+      params["page"] = this.transaction.page
+      params["pageSize"] = this.transaction.pageSize
+      this.$http
+        .post(this.host + "/uc/withdraw/record", params)
+        .then(response => {
+          var resp = response.body
+          if (resp.code == 0) {
+            this.tableWithdraw = resp.data.content
+            this.transaction.total = resp.data.totalElements
+            this.transaction.page = resp.data.number
+          } else {
+            // this.$Message.error(resp.message);
+          }
+          this.loading = false
         })
     },
-    computed: {
-        member: function () {
-            return this.$store.getters.member;
-        },
-        tableColumnsWithdraw() {
-            let columns = [],
-                filters = [];
-            if (this.coinList.length > 0) {
-                this.coinList.forEach(v => {
-                    filters.push({
-                        label: v.unit,
-                        value: v.unit
-                    });
-                });
-            }
-            columns.push({
-                title: this.$t("uc.finance.withdraw.time"),
-                width: 180,
-                key: "createTime"
-            });
-            columns.push({
-                title: this.$t("uc.finance.withdraw.symbol"),
-                key: "symbol",
-                filters,
-                filterMultiple: false,
-                filterMethod(value, row) {
-                    return row.coin.unit === value;
-                },
-                render: function (h, params) {
-                    return h("span", params.row.coin.unit);
-                }
-            });
-            columns.push({
-                title: this.$t("uc.finance.withdraw.address"),
-                key: "address"
-            });
-            columns.push({
-                title: this.$t("uc.finance.withdraw.num"),
-                key: "totalAmount"
-            });
-            columns.push({
-                title: this.$t("uc.finance.withdraw.fee"),
-                key: "fee"
-            });
-            columns.push({
-                title: this.$t("uc.finance.withdraw.status"),
-                key: "status",
-                render: (h, params) => {
-                    let text = "";
-                    if (params.row.status == 0) {
-                        text = this.$t("uc.finance.withdraw.status_1");
-                    } else if (params.row.status == 1) {
-                        text = this.$t("uc.finance.withdraw.status_2");
-                    } else if (params.row.status == 2) {
-                        text = this.$t("uc.finance.withdraw.status_3");
-                    } else if (params.row.status == 3) {
-                        text = this.$t("uc.finance.withdraw.status_4");
-                    }
-                    return h("div", [h("p", text)]);
-                }
-            });
-            return columns;
+    accSub (arg1, arg2) {
+      var r1, r2, m, n
+      try {
+        r1 = arg1.toString().split(".")[1].length
+      } catch (e) {
+        r1 = 0
+      }
+      try {
+        r2 = arg2.toString().split(".")[1].length
+      } catch (e) {
+        r2 = 0
+      }
+      m = Math.pow(10, Math.max(r1, r2))
+      //last modify by deeka
+      //动态控制精度长度
+      n = r1 >= r2 ? r1 : r2
+      return ((arg1 * m - arg2 * m) / m).toFixed(n)
+    },
+    round (v, e) {
+      var t = 1
+      for (; e > 0; t *= 10, e--);
+      for (; e < 0; t /= 10, e++);
+      return Math.round(v * t) / t
+    },
+    computerAmount () {
+      /*let num = this.round(
+          this.accSub(this.withdrawAmount, this.withdrawFee),
+          this.currentCoin.withdrawScale
+      );
+      this.withdrawOutAmount = num >= 0 ? num : 0;*/
+      // 新增代码
+      // 判断 提币数量 < 最小手续费 = 最小提币数量
+      // if (this.withdrawAmount <= this.currentCoin.minAmount) {
+      //     this.withdrawAmount = this.currentCoin.maxAmount
+      // }
+      // 否则 提出当前数量减去手续费
+      this.withdrawOutAmount = this.withdrawAmount - this.withdrawFee < 0 ? 0 : Number((this.withdrawAmount - this.withdrawFee).toFixed(5))
+      // 旧代码
+      // this.withdrawOutAmount = this.round(
+      //   this.accSub(this.withdrawAmount, this.withdrawFee),
+      //   this.currentCoin.withdrawScale
+      // );
+    },
+    computerAmount2 () {
+      this.withdrawAmount =
+        (this.withdrawAmount + "").replace(/([0-9]+\.[0-9]{6})[0-9]*/, "$1") -
+        0
+      this.withdrawOutAmount = this.round(
+        this.accSub(this.withdrawAmount, this.withdrawFee),
+        this.currentCoin.withdrawScale
+      )
+    },
+    valid () {
+      this.withdrawAdress = this.withdrawAdress || this.inputAddress
+      if (this.coinType == "") {
+        this.$Message.error(this.$t("uc.finance.withdraw.symboltip"))
+        return false
+      } else if (this.withdrawAdress == "") {
+        this.$Message.error(this.$t("uc.finance.withdraw.addresstip"))
+        return false
+      } else if (this.showEOS == true && this.EOSLabel == "") {
+        this.$Message.error('请输入EOS地址标签')
+      } else if (
+        this.withdrawAmount == "" ||
+        this.withdrawAmount == 0 ||
+        this.withdrawAmount - 0 < this.currentCoin.minAmount
+      ) {
+        this.$Message.error(
+          this.$t("uc.finance.withdraw.numtip2") + this.currentCoin.minAmount
+        )
+        return false
+      } else if (this.withdrawAmount - 0 < this.withdrawFee) {
+        this.$Message.error(this.$t("uc.finance.withdraw.numtip3"))
+        return false
+      } else if (
+        this.withdrawFee == "" ||
+        this.withdrawFee == 0 ||
+        this.withdrawFee - 0 > this.currentCoin.maxTxFee ||
+        this.withdrawFee - 0 < this.currentCoin.minTxFee
+      ) {
+        this.$Message.error(
+          this.$t("uc.finance.withdraw.feetip1") + this.currentCoin.minTxFee + " , " + this.$t("uc.finance.withdraw.feetip2") + this.currentCoin.maxTxFee
+        )
+        return false
+      } else {
+        return true
+      }
+    },
+    apply () {
+      this.formInline.code = ""
+      this.formInline.fundpwd = ""
+      this.formInline.googleCode = ""
+      if (this.valid()) {
+        this.modal = true
+        let timercode = setInterval(() => {
+          if (this.countdown <= 0) {
+            clearInterval(timercode)
+            this.sendcodeValue = this.$t("uc.regist.sendcode")
+            this.codeIsSending = false
+          }
+        }, 1000)
+      }
+    },
+    getMember () {
+      //获取个人安全信息
+      this.$http.post(this.host + "/uc/approve/security/setting").then(response => {
+        var resp = response.body
+        if (resp.code == 0) {
+          this.user = resp.data
+        } else {
+          this.$Message.error(this.loginmsg)
         }
+      })
     }
+  },
+  created () {
+    // this.getMember();
+    this.$http.options.emulateJSON = false
+    this.coinType = this.$route.query.name || ""
+    this.getAddrList()
+    this.getList(0, 10, 1)
+
+    this.$http.post(this.host + '/uc/get/user', { mobile: this.$store.getters.member.mobile }).then(res => {
+      const data = res.body
+      if (data.code == 0) {
+        this.googleSwitch = !!data.data
+      }
+    })
+  },
+  computed: {
+    member: function () {
+      return this.$store.getters.member
+    },
+    tableColumnsWithdraw () {
+      let columns = [],
+        filters = []
+      if (this.coinList.length > 0) {
+        this.coinList.forEach(v => {
+          filters.push({
+            label: v.unit,
+            value: v.unit
+          })
+        })
+      }
+      columns.push({
+        title: this.$t("uc.finance.withdraw.time"),
+        width: 180,
+        key: "createTime"
+      })
+      columns.push({
+        title: this.$t("uc.finance.withdraw.symbol"),
+        key: "symbol",
+        filters,
+        filterMultiple: false,
+        filterMethod (value, row) {
+          return row.coin.unit === value
+        },
+        render: function (h, params) {
+          return h("span", params.row.coin.unit)
+        }
+      })
+      columns.push({
+        title: this.$t("uc.finance.withdraw.address"),
+        key: "address"
+      })
+      columns.push({
+        title: this.$t("uc.finance.withdraw.num"),
+        key: "totalAmount"
+      })
+      columns.push({
+        title: this.$t("uc.finance.withdraw.fee"),
+        key: "fee"
+      })
+      columns.push({
+        title: this.$t("uc.finance.withdraw.status"),
+        key: "status",
+        render: (h, params) => {
+          let text = ""
+          if (params.row.status == 0) {
+            text = this.$t("uc.finance.withdraw.status_1")
+          } else if (params.row.status == 1) {
+            text = this.$t("uc.finance.withdraw.status_2")
+          } else if (params.row.status == 2) {
+            text = this.$t("uc.finance.withdraw.status_3")
+          } else if (params.row.status == 3) {
+            text = this.$t("uc.finance.withdraw.status_4")
+          }
+          return h("div", [h("p", text)])
+        }
+      })
+      return columns
+    }
+  }
 };
 </script>
 <style lang="scss">
 .withdraw-form-inline {
-    padding: 20px 40px 0 40px;
-    .ivu-input {
-        height: 40px;
-        line-height: 40px;
-    }
+  padding: 20px 40px 0 40px;
+  .ivu-input {
+    height: 40px;
+    line-height: 40px;
+  }
 }
 </style>
 
 <style scoped lang="scss">
-    .EosLabelAdr{
-        width: 100%;
-        border: 1px solid #DCDEE2;
-        box-sizing: border-box;
-        padding:0 15px;
-        font-size: 12px;
-        line-height: 30px;
-        border-radius: 5px;
-        &:focus{
-            outline: none;
-        }
-        &::placeholder{
-            color:#C5C8D1;
-        }
-    }
+.EosLabelAdr {
+  width: 100%;
+  border: 1px solid #dcdee2;
+  box-sizing: border-box;
+  padding: 0 15px;
+  font-size: 12px;
+  line-height: 30px;
+  border-radius: 5px;
+  &:focus {
+    outline: none;
+  }
+  &::placeholder {
+    color: #c5c8d1;
+  }
+}
 #sendCode {
   position: absolute;
   border: none;
@@ -774,66 +774,64 @@ export default {
   outline: none;
   right: 0;
   width: 30%;
-  color: #1EBB88;
+  color: #1ebb88;
   cursor: pointer;
   height: 20px;
   line-height: 20px;
   border-left: 1px solid #dddee1;
 }
 .nav-rights {
-    .nav-right {
-        height: auto;
-        overflow: hidden;
-        display: block;
-        margin-right: 0;
-        a {
-          display: inline-block;
-          color: #1EBB88;
-          height: 30px;
-          padding: 0 10px;
-          border: 1px solid #1EBB88;
-          line-height: 30px;
-          text-align: center;
-          border-radius: 20px;
-          float: right;
-          margin-right: 20px;
-        }
-      }
-      .action-box {
-        padding: 10px 20px 20px;
-        .form-group-container {
-          .form-group.form-amount {
-            .input-group .ivu-poptip {
-              .ivu-poptip-rel {
-                display: block;
-                margin-right: 0;
+  .nav-right {
+    height: auto;
+    overflow: hidden;
+    display: block;
+    margin-right: 0;
+    a {
+      display: inline-block;
+      color: #1ebb88;
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid #1ebb88;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 20px;
+      float: right;
+      margin-right: 20px;
+    }
+  }
+  .action-box {
+    padding: 10px 20px 20px;
+    .form-group-container {
+      .form-group.form-amount {
+        .input-group .ivu-poptip {
+          .ivu-poptip-rel {
+            display: block;
+            margin-right: 0;
 
-                a {
-                  display: inline-block;
-                  color: #f0a70a;
-                  width: 100px;
-                  height: 30px;
-                  border: 1px solid #f0a70a;
-                  line-height: 30px;
-                  text-align: center;
-                  border-radius: 20px;
-                  float: right;
-                }
-              }
+            a {
+              display: inline-block;
+              color: #f0a70a;
+              width: 100px;
+              height: 30px;
+              border: 1px solid #f0a70a;
+              line-height: 30px;
+              text-align: center;
+              border-radius: 20px;
+              float: right;
+            }
+          }
 
-              .action-box {
-                padding: 10px 20px 20px;
+          .action-box {
+            padding: 10px 20px 20px;
 
-                .form-group-container {
-                  .form-group.form-amount {
-                    .input-group .ivu-poptip {
-                      .ivu-poptip-rel {
-                        display: block;
+            .form-group-container {
+              .form-group.form-amount {
+                .input-group .ivu-poptip {
+                  .ivu-poptip-rel {
+                    display: block;
 
-                        .ivu-input-number {
-                          width: 100%;
-                        }
-                      }
+                    .ivu-input-number {
+                      width: 100%;
                     }
                   }
                 }
@@ -842,10 +840,12 @@ export default {
           }
         }
       }
-.ivu-slider-button-wrap {
+    }
+  }
+  .ivu-slider-button-wrap {
     top: -6px;
-}
-#withdrawAddressList {
+  }
+  #withdrawAddressList {
     position: absolute;
     height: 0;
     transition: height 0.3s;
@@ -858,9 +858,9 @@ export default {
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
     height: auto;
     background: #fff;
-}
+  }
 
-#withdrawAddressList .address-item {
+  #withdrawAddressList .address-item {
     padding: 0 20px;
     display: flex;
     line-height: 48px;
@@ -869,14 +869,14 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     z-index: 99;
-}
+  }
 
-#withdrawAddressList .address-item:hover {
+  #withdrawAddressList .address-item:hover {
     background: #f5f5f5;
     cursor: pointer;
-}
+  }
 
-#withdrawAddressList .notes {
+  #withdrawAddressList .notes {
     position: absolute;
     bottom: 0;
     right: 20px;
@@ -886,100 +886,100 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
+  }
 
-p.describe {
+  p.describe {
     font-size: 16px;
     font-weight: 600;
-}
+  }
 
-.acb-p1 {
+  .acb-p1 {
     font-size: 18px;
     font-weight: 600;
     line-height: 50px;
-}
+  }
 
-.acb-p2 {
+  .acb-p2 {
     font-size: 14px;
     line-height: 24px;
-}
+  }
 
-.action-content.pt10 {
+  .action-content.pt10 {
     padding-top: 10px;
-}
+  }
 
-.action-content {
+  .action-content {
     width: 100%;
     margin-top: 20px;
     // overflow: hidden;
     display: table;
-}
+  }
 
-.action-content .action-body {
+  .action-content .action-body {
     display: table-cell;
     vertical-align: top;
     line-height: 20px;
     font-size: 12px;
-}
+  }
 
-.action-foot {
-  text-align: center;
-  padding: 40px 0;
-}
+  .action-foot {
+    text-align: center;
+    padding: 40px 0;
+  }
 
-.hb-night .btn.btn-primary,
-.hb-night .btn.btn_submit {
+  .hb-night .btn.btn-primary,
+  .hb-night .btn.btn_submit {
     background-color: #7a98f7;
     color: white;
-}
+  }
 
-.action-inner {
+  .action-inner {
     width: 100%;
     display: table;
-}
+  }
 
-.action-inner .inner-box {
+  .action-inner .inner-box {
     display: table-cell;
     width: 80%;
-}
+  }
 
-.form-group {
+  .form-group {
     position: relative;
     margin-bottom: 20px;
     font-size: 16px;
-}
+  }
 
-.controlAddress {
+  .controlAddress {
     line-height: 50px;
-}
+  }
 
-.form-group label {
+  .form-group label {
     max-width: 100%;
     font-weight: 600;
-}
+  }
 
-.control-input-group {
+  .control-input-group {
     position: relative;
-}
+  }
 
-.control-input-group.open .select-list {
+  .control-input-group.open .select-list {
     height: auto;
-}
+  }
 
-.form-group-container {
+  .form-group-container {
     display: table;
     width: 100%;
-}
+  }
 
-.form-group-container .form-amount {
+  .form-group-container .form-amount {
     width: 100%;
-}
+  }
 
-.form-group-container .form-group {
+  .form-group-container .form-group {
     display: table-cell;
-}
+  }
 
-.form-group-container .form-group span.addon-tag:last-child {
+  .form-group-container .form-group span.addon-tag:last-child {
     padding: 0;
     border: none;
     background: none;
@@ -987,213 +987,213 @@ p.describe {
     position: absolute;
     right: 26px;
     top: 6px;
-}
+  }
 
-.form-group-container .form-group span.addon-tag:last-child.firstt {
+  .form-group-container .form-group span.addon-tag:last-child.firstt {
     top: 8px;
-}
+  }
 
-.form-group-container2 {
+  .form-group-container2 {
     padding-top: 20px;
-}
+  }
 
-.form-group-container .form-fee {
+  .form-group-container .form-fee {
     width: 50%;
     padding: 0 20px 0 0;
-}
+  }
 
-.label-amount .label-fr {
+  .label-amount .label-fr {
     float: right;
     color: #aaa;
     font-size: 14px;
-}
+  }
 
-.label-amount .label-fr span {
+  .label-amount .label-fr span {
     margin-left: 2px;
-}
+  }
 
-.form-group-container .form-group {
+  .form-group-container .form-group {
     display: table-cell;
-}
+  }
 
-.hb-night table.table .table-inner {
+  .hb-night table.table .table-inner {
     margin: -4px -20px;
     position: relative;
     background-color: #181b2a;
     border-radius: 3px;
-}
+  }
 
-.hb-night table.table .table-inner {
+  .hb-night table.table .table-inner {
     margin: -4px -20px;
     position: relative;
     background-color: #181b2a;
     border-radius: 3px;
-}
+  }
 
-.hb-night table.table .table-inner {
+  .hb-night table.table .table-inner {
     margin: -4px -20px;
     position: relative;
     background-color: #181b2a;
     border-radius: 3px;
-}
+  }
 
-table.table .table-inner.action-box {
+  table.table .table-inner.action-box {
     margin: -1px -10px;
-}
+  }
 
-/* .merchant-icon {
+  /* .merchant-icon {
   display: inline-block;
   margin-left: 4px;
   background-size: 100% 100%;
 } */
-.udsdtType{
+  .udsdtType {
     margin: 10px 0 20px 0;
-    .usdtTitle{
-        font-weight: bold;
-        margin-bottom:15px;
-        font-size: 16px;
+    .usdtTitle {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 16px;
     }
-    .selectUsdt{
-        padding:7px 20px;
-        box-sizing: border-box;
-        width: calc(50% - 10px);
-        text-align: center;
-        border:1px solid #dedede;
-        border-radius: 3px;
-        cursor: pointer;
-        &.active{
-            border:1px solid #1ebb88;
-            color:#fff;
-            background: #1EBB88;
-        }
+    .selectUsdt {
+      padding: 7px 20px;
+      box-sizing: border-box;
+      width: calc(50% - 10px);
+      text-align: center;
+      border: 1px solid #dedede;
+      border-radius: 3px;
+      cursor: pointer;
+      &.active {
+        border: 1px solid #1ebb88;
+        color: #fff;
+        background: #1ebb88;
+      }
     }
-}
-.merchant-top .tips-word {
+  }
+  .merchant-top .tips-word {
     -webkit-box-flex: 2;
     -ms-flex-positive: 2;
     flex-grow: 2;
     text-align: left;
-}
+  }
 
-// .rightarea .rightarea-top {
-//   line-height: 75px;
-//   border-bottom: #f1f1f1 solid 1px;
-// }
+  // .rightarea .rightarea-top {
+  //   line-height: 75px;
+  //   border-bottom: #f1f1f1 solid 1px;
+  // }
 
-// .rightarea .rightarea-con {
-//   padding-top: 30px;
-//   padding-bottom: 125px;
-// }
+  // .rightarea .rightarea-con {
+  //   padding-top: 30px;
+  //   padding-bottom: 125px;
+  // }
 
-// .rightarea .trade-process {
-//   line-height: 30px;
-//   padding: 0 15px;
-//   background: #f1f1f1;
-//   display: inline-block;
-//   position: relative;
-//   margin-right: 20px;
-// }
+  // .rightarea .trade-process {
+  //   line-height: 30px;
+  //   padding: 0 15px;
+  //   background: #f1f1f1;
+  //   display: inline-block;
+  //   position: relative;
+  //   margin-right: 20px;
+  // }
 
-// .rightarea .trade-process.active {
-//   color: #eb6f6c;
-//   background: #f9f5eb;
-// }
+  // .rightarea .trade-process.active {
+  //   color: #eb6f6c;
+  //   background: #f9f5eb;
+  // }
 
-// .rightarea .trade-process .icon {
-//   background: #fff;
-//   border-radius: 20px;
-//   height: 20px;
-//   width: 20px;
-//   display: inline-block;
-//   line-height: 20px;
-//   text-align: center;
-//   margin-right: 10px;
-// }
+  // .rightarea .trade-process .icon {
+  //   background: #fff;
+  //   border-radius: 20px;
+  //   height: 20px;
+  //   width: 20px;
+  //   display: inline-block;
+  //   line-height: 20px;
+  //   text-align: center;
+  //   margin-right: 10px;
+  // }
 
-// .rightarea .trade-process .arrow {
-//   position: absolute;
-//   top: 10px;
-//   right: -5px;
-//   width: 0;
-//   height: 0;
-//   border-top: 5px solid transparent;
-//   border-bottom: 5px solid transparent;
-//   border-left: 5px solid #f1f1f1;
-// }
+  // .rightarea .trade-process .arrow {
+  //   position: absolute;
+  //   top: 10px;
+  //   right: -5px;
+  //   width: 0;
+  //   height: 0;
+  //   border-top: 5px solid transparent;
+  //   border-bottom: 5px solid transparent;
+  //   border-left: 5px solid #f1f1f1;
+  // }
 
-// .rightarea .trade-process.active .arrow {
-//   border-left: 5px solid #f9f5eb;
-// }
+  // .rightarea .trade-process.active .arrow {
+  //   border-left: 5px solid #f9f5eb;
+  // }
 
-.rightarea .rightarea-tabs {
+  .rightarea .rightarea-tabs {
     border: none;
-}
+  }
 
-// .rightarea .rightarea-tabs li > a {
-//   width: 100%;
-//   height: 100%;
-//   padding: 0;
-//   margin-right: 0;
-//   font-size: 14px;
-//   color: #646464;
-//   border-radius: 0;
-//   border: none;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
+  // .rightarea .rightarea-tabs li > a {
+  //   width: 100%;
+  //   height: 100%;
+  //   padding: 0;
+  //   margin-right: 0;
+  //   font-size: 14px;
+  //   color: #646464;
+  //   border-radius: 0;
+  //   border: none;
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  // }
 
-// .rightarea .rightarea-tabs li > a:hover {
-//   background-color: #fcfbfb;
-// }
+  // .rightarea .rightarea-tabs li > a:hover {
+  //   background-color: #fcfbfb;
+  // }
 
-// .rightarea .rightarea-tabs li {
-//   width: 125px;
-//   height: 40px;
-//   position: relative;
-//   margin: -1px 0 0 -1px;
-//   border: 1px solid #f1f1f1;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   cursor: pointer;
-// }
+  // .rightarea .rightarea-tabs li {
+  //   width: 125px;
+  //   height: 40px;
+  //   position: relative;
+  //   margin: -1px 0 0 -1px;
+  //   border: 1px solid #f1f1f1;
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   cursor: pointer;
+  // }
 
-// .rightarea .rightarea-tabs li.active {
-//   background-color: #fcfbfb;
-// }
+  // .rightarea .rightarea-tabs li.active {
+  //   background-color: #fcfbfb;
+  // }
 
-// .rightarea .rightarea-tabs li:last-child {
-//   border-right: 1px solid #f1f1f1;
-// }
+  // .rightarea .rightarea-tabs li:last-child {
+  //   border-right: 1px solid #f1f1f1;
+  // }
 
-// .rightarea .rightarea-tabs li.active > a,
-// .rightarea .rightarea-tabs li:hover > a {
-//   color: #da2e22;
-//   border: none;
-// }
+  // .rightarea .rightarea-tabs li.active > a,
+  // .rightarea .rightarea-tabs li:hover > a {
+  //   color: #da2e22;
+  //   border: none;
+  // }
 
-// .rightarea .panel-tips {
-//   border: 3px solid #fdfaf3;
-//   color: #9e9e9e;
-//   font-size: 12px;
-// }
+  // .rightarea .panel-tips {
+  //   border: 3px solid #fdfaf3;
+  //   color: #9e9e9e;
+  //   font-size: 12px;
+  // }
 
-// .rightarea .panel-tips .panel-header {
-//   background: #fdfaf3;
-//   line-height: 40px;
-//   margin-bottom: 15px;
-// }
+  // .rightarea .panel-tips .panel-header {
+  //   background: #fdfaf3;
+  //   line-height: 40px;
+  //   margin-bottom: 15px;
+  // }
 
-// .rightarea .panel-tips .panel-title {
-//   font-size: 16px;
-// }
+  // .rightarea .panel-tips .panel-title {
+  //   font-size: 16px;
+  // }
 
-// .rightarea .recordtitle {
-//   cursor: pointer;
-// }
+  // .rightarea .recordtitle {
+  //   cursor: pointer;
+  // }
 
-.order_box {
+  .order_box {
     width: 100%;
     background: #fff;
     height: 56px;
@@ -1202,9 +1202,9 @@ table.table .table-inner.action-box {
     border-bottom: 2px solid #ccf2ff;
     position: relative;
     text-align: left;
-}
+  }
 
-.order_box a {
+  .order_box a {
     color: #8994a3;
     font-size: 16px;
     padding: 0 30px;
@@ -1213,13 +1213,13 @@ table.table .table-inner.action-box {
     text-align: center;
     line-height: 54px;
     display: inline-block;
-}
+  }
 
-.order_box .active {
-  border-bottom: 2px solid #1EBB88;
-}
+  .order_box .active {
+    border-bottom: 2px solid #1ebb88;
+  }
 
-.order_box .search {
+  .order_box .search {
     position: absolute;
     width: 300px;
     height: 32px;
@@ -1227,33 +1227,33 @@ table.table .table-inner.action-box {
     right: 0;
     display: flex;
     /* border: #c5cdd7 solid 1px; */
-}
+  }
 
-.ivu-btn-primary {
-  background-color: #1EBB88;
-  border-color: #1EBB88;
-}
-#pages {
+  .ivu-btn-primary {
+    background-color: #1ebb88;
+    border-color: #1ebb88;
+  }
+  #pages {
     margin: 10px;
     overflow: hidden;
-}
-#pages .ivu-page li.ivu-page-item-active {
-  background-color: #1EBB88 !important;
-  border-color: #1EBB88 !important;
-}
-#pages li.ivu-page-item-active:hover {
-  color: #1EBB88 !important;
-}
-.ivu-page-item-active {
-  background-color: #1EBB88;
-  border-color: #1EBB88;
-}
-.ivu-page-item:hover {
-  color: #1EBB88;
-}
-.pages_a .ivu-page-item-active {
+  }
+  #pages .ivu-page li.ivu-page-item-active {
+    background-color: #1ebb88 !important;
+    border-color: #1ebb88 !important;
+  }
+  #pages li.ivu-page-item-active:hover {
+    color: #1ebb88 !important;
+  }
+  .ivu-page-item-active {
+    background-color: #1ebb88;
+    border-color: #1ebb88;
+  }
+  .ivu-page-item:hover {
+    color: #1ebb88;
+  }
+  .pages_a .ivu-page-item-active {
     background-color: red !important;
-}
+  }
 }
 </style>
 <style lang="scss">
@@ -1268,18 +1268,18 @@ table.table .table-inner.action-box {
             .ivu-select.ivu-select-single {
               .ivu-select-selection {
                 &:hover {
-                  border-color: #1EBB88;
+                  border-color: #1ebb88;
                 }
               }
 
               .ivu-select-selection.ivu-select-selection-focused {
-                border-color: #1EBB88;
+                border-color: #f0a70a;
               }
             }
 
             .ivu-select.ivu-select-visible.ivu-select-single {
               .ivu-select-selection {
-                border-color: #1EBB88;
+                border-color: #f0a70a;
                 -moz-box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
                 -webkit-box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
                 box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
@@ -1291,14 +1291,14 @@ table.table .table-inner.action-box {
 
               &:hover {
                 background: #fff;
-                color: #1EBB88;
+                color: #f0a70a;
               }
             }
 
             .ivu-select-dropdown {
               li.ivu-select-item.ivu-select-item-selected.ivu-select-item-focus {
                 background: #fff;
-                color: #1EBB88;
+                color: #f0a70a;
               }
 
               li.ivu-select-item.ivu-select-item-selected {
@@ -1306,7 +1306,7 @@ table.table .table-inner.action-box {
                 color: #495060;
 
                 &:hover {
-                  color: #1EBB88;
+                  color: #f0a70a;
                 }
               }
             }
@@ -1323,12 +1323,12 @@ table.table .table-inner.action-box {
                   width: 100%;
 
                   &:hover {
-                    border-color: #1EBB88;
+                    border-color: #1ebb88;
                   }
                 }
 
                 .ivu-input-number-focused {
-                  border-color: #1EBB88;
+                  border-color: #1ebb88;
                   -moz-box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
                   -webkit-box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
                   box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
@@ -1339,12 +1339,12 @@ table.table .table-inner.action-box {
                 width: 100%;
 
                 &:hover {
-                  border-color: #1EBB88;
+                  border-color: #1ebb88;
                 }
               }
 
               .ivu-input-number-focused {
-                border-color: #1EBB88;
+                border-color: #1ebb88;
                 -moz-box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
                 -webkit-box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
                 box-shadow: 2px 2px 5px #fff, -2px -2px 4px #fff;
@@ -1371,7 +1371,7 @@ table.table .table-inner.action-box {
             thead .ivu-table-cell {
               .ivu-poptip .ivu-poptip-rel .ivu-table-filter {
                 i.ivu-icon.ivu-icon-funnel.on {
-                  color: #1EBB88;
+                  color: #1ebb88;
                 }
               }
             }
@@ -1380,8 +1380,8 @@ table.table .table-inner.action-box {
           #pages {
             .ivu-page {
               .ivu-page-item.ivu-page-item-active {
-                background-color: #1EBB88;
-                border-color: #1EBB88;
+                background-color: #1ebb88;
+                border-color: #1ebb88;
                 color: #fff;
 
                 &:hover {
@@ -1393,20 +1393,20 @@ table.table .table-inner.action-box {
 
               .ivu-page-item {
                 &:hover {
-                  border: 1px solid #1EBB88;
+                  border: 1px solid #1ebb88;
 
                   a {
-                    color: #1EBB88;
+                    color: #1ebb88;
                   }
                 }
 
                 .ivu-page-prev,
                 .ivu-page-next {
                   &:hover {
-                    border: 1px solid #1EBB88;
+                    border: 1px solid #f0a70a;
 
                     a {
-                      color: #1EBB88;
+                      color: #f0a70a;
                     }
                   }
                 }
@@ -1424,7 +1424,7 @@ table.table .table-inner.action-box {
             }
 
             li.ivu-table-filter-select-item.ivu-table-filter-select-item-selected {
-              background: #1EBB88;
+              background: #141e2c;
               color: #fff;
             }
           }

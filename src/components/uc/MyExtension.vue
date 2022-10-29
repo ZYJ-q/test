@@ -388,7 +388,7 @@ export default {
 .nav-right {
   .message {
     .ivu-table-wrapper {
-      border-color: #fff;
+      // border-color: #fff;
       -moz-box-shadow: 2px 2px 5px #f5f5f5, -2px -2px 4px #f5f5f5;
       -webkit-box-shadow: 2px 2px 5px #f5f5f5, -2px -2px 4px #f5f5f5;
       box-shadow: 2px 2px 5px #f5f5f5, -2px -2px 4px #f5f5f5;

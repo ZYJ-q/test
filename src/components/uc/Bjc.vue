@@ -176,7 +176,7 @@ export default {
   .ivu-table-wrapper {
     .ivu-table-header {
       thead th {
-        background: #fff;
+        // background: #fff;
       }
     }
     tbody.ivu-table-tbody .ivu-table-row td {

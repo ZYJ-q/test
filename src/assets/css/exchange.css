@@ -675,7 +675,7 @@ tr.ivu-table-row-highlight.ivu-table-row-hover td {
 }
 
 .exchange.day .ivu-table .ivu-table-header th {
-    background-color: #fff;
+    /* background-color: #fff; */
     border-top: 1px solid #f0f0f0;
     border-bottom: 1px solid #f0f0f0;
 }
@@ -850,7 +850,7 @@ tr.ivu-table-row-highlight.ivu-table-row-hover td {
 }
 
 .exchange.day .ivu-table-header {
-    background-color: #fff ;
+    /* background-color: #fff ; */
 }
 
 .exchange .ivu-table-wrapper .ivu-table .ivu-table-header th.percenttd {

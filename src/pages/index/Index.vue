@@ -1,3 +1,9 @@
+<style >
+.ivu-table .demo-table-info-row td {
+  background-color: #141e2c !important;
+  color: #fff;
+}
+</style>
 <template>
   <div>
     <div id="fullpage">
@@ -127,6 +133,8 @@
         <div class="ptjy">
           <Table
             v-if="choseBtn == 3"
+            script
+            :row-class-name="rowClassName"
             :no-data-text="$t('common.nodata')"
             :columns="favorColumns"
             :data="dataIndex"
@@ -136,6 +144,8 @@
           ></Table>
           <Table
             v-else
+            script
+            :row-class-name="rowClassName"
             :no-data-text="$t('common.nodata')"
             :columns="coins.columns"
             :data="dataIndex"
@@ -566,7 +576,7 @@ export default {
               let flag = this.isLogin
               return h("Icon", {
                 props: {
-                  color: "#03bf7b",
+                  color: "#f0a70a",
                   size: "18",
                   type: params.row.isFavor
                     ? "ios-star"
@@ -625,8 +635,8 @@ export default {
                 ),
                 h("span", {
                   style: {
-                    fontSize: "16px",
-                    fontWeight: 800
+                    // fontSize: "16px",
+                    // fontWeight: 800
                   }
                 }, params.row.coin)
               ])
@@ -887,6 +897,9 @@ export default {
     this.getHotSymbol()
   },
   methods: {
+    rowClassName (row, index) {
+      return 'demo-table-info-row'
+    },
     getSEO () {
       this.$http.post(this.host + '/market/findSite').then(res => {
         if (res.data.code == 0) {
@@ -1485,19 +1498,42 @@ li {
   .page2nav {
     line-height: 40px;
     font-size: 20px;
+    background: #1e2834;
+    display: flex;
+    overflow: auto;
+    .board-title {
+      width: 20%;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      background: #ffa800;
+      color: #000;
+    }
     .brclearfix {
       font-weight: 600;
       /*border: 1px solid #232352;*/
       border-bottom: 0;
-      background: #141e2c;
+      width: 100%;
+      display: flex;
+      overflow: scroll;
+      // background: #141e2c;
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+      &::-webkit-scrollbar-track-piece {
+        background: transparent;
+      }
       li {
         float: left;
         cursor: pointer;
-        color: #cbd7f0;
-        background: #141e2c;
+        color: #fff;
+        background: #1e2834;
         list-style: none;
         font-size: 16px;
         padding: 0 30px;
+        -moz-box-shadow: 2px 2px 5px transparent, -2px -2px 4px transparent;
+        -webkit-box-shadow: 2px 2px 5px transparent, -2px -2px 4px transparent;
+        box-shadow: 2px 2px 5px transparent, -2px -2px 4px transparent;
         /*box-shadow: 2px 2px 5px #f5f5f5, -2px -2px 4px #f5f5f5;*/
         &:hover {
           background: #222b38;
@@ -1514,6 +1550,13 @@ li {
   .ptjy {
     // border: 1px solid #eee;
     height: 100%;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      height: 1px;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: transparent;
+    }
     .tables {
       border: none;
       border-left: 1px solid rgba(13, 64, 57, 0.1);
@@ -1987,7 +2030,7 @@ li {
   }
 }
 .ivu-table-wrapper > .ivu-spin-fix {
-  border-color: #3f9388;
+  border-color: #f0a70a;
   background-color: #141e2c !important;
 }
 </style>
